@@ -61,3 +61,8 @@ echo "Removal process complete. Backup of the original file is available as ${ST
 
 # Clean up temporary files
 rm "$CONSTANTS_FILE" "$UNUSED_CONSTANTS_FILE"
+
+# Remove the backup file after process is complete
+rm "${STRINGS_FILE}.bak"
+
+echo "Backup file removed."
