@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # Define paths
 STRINGS_FILE="lib/languages/strings.dart"
@@ -13,7 +13,7 @@ fi
 
 # Extract constants from strings.dart
 awk '/static\s+const\s+String\s+[A-Za-z_][A-Za-z0-9_]*\s*=/ {print $3}' "$STRINGS_FILE" > "$CONSTANTS_FILE"
-# Alternatively, use sed to extract constants
+# Or use sed to extract constants
 sed -n 's/.*static const String \([A-Za-z_][A-Za-z0-9_]*\) =.*/\1/p' "$STRINGS_FILE" > "$CONSTANTS_FILE"
 
 # Check if constants file is created and not empty
@@ -49,7 +49,7 @@ cp "$STRINGS_FILE" "${STRINGS_FILE}.bak"
 # Remove unused constants from strings.dart
 while IFS= read -r constant; do
   echo "Removing unused constant: $constant"
-  # Use sed to remove the entire line containing the unused constant
+  # Use sed to remove the line containing the unused constant
   sed -i.bak "/static const String $constant=/d" "$STRINGS_FILE"
 done < "$UNUSED_CONSTANTS_FILE"
 
