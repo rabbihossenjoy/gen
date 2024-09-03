@@ -5,6 +5,7 @@ STRINGS_FILE="lib/languages/strings.dart"
 SEARCH_DIR="lib/"
 CONSTANTS_FILE="constants.txt"
 UNUSED_CONSTANTS_FILE="unused_constants.txt"
+TEMP_FILE="temp_strings.dart"
 
 # Create the constants file if not already created
 if [ ! -f "$CONSTANTS_FILE" ]; then
@@ -12,9 +13,8 @@ if [ ! -f "$CONSTANTS_FILE" ]; then
 fi
 
 # Extract constants from strings.dart
-awk '/static\s+const\s+String\s+[A-Za-z_][A-Za-z0-9_]*\s*=/ {print $3}' "$STRINGS_FILE" > "$CONSTANTS_FILE"
-# Or use sed to extract constants
-sed -n 's/.*static const String \([A-Za-z_][A-Za-z0-9_]*\) =.*/\1/p' "$STRINGS_FILE" > "$CONSTANTS_FILE"
+awk '/String\s+[A-Za-z_][A-Za-z0-9_]*\s*=/ {print $2}' "$STRINGS_FILE" > "$CONSTANTS_FILE"
+sed -n 's/.*String \([A-Za-z_][A-Za-z0-9_]*\) =.*/\1/p' "$STRINGS_FILE" > "$CONSTANTS_FILE"
 
 # Check if constants file is created and not empty
 if [ ! -s "$CONSTANTS_FILE" ]; then
@@ -50,7 +50,7 @@ cp "$STRINGS_FILE" "${STRINGS_FILE}.bak"
 while IFS= read -r constant; do
   echo "Removing unused constant: $constant"
   # Use sed to remove the line containing the unused constant
-  sed -i.bak "/static const String $constant=/d" "$STRINGS_FILE"
+  sed -i.bak "/String $constant =/d" "$STRINGS_FILE"
 done < "$UNUSED_CONSTANTS_FILE"
 
 # Verify changes
