@@ -26,6 +26,9 @@ to_camel_case() {
 # Temporary file to hold the output
 temp_file=$(mktemp)
 
+# File to keep track of existing constants
+existing_constants_file=$(mktemp)
+
 # Start building the Strings class
 echo "class Strings {" > "$temp_file"
 echo >> "$temp_file"
@@ -42,6 +45,11 @@ while IFS= read -r line; do
 
     # Convert to camelCase variable name with up to 3 words
     var_name=$(to_camel_case "$cleaned_line")
+
+    # Check if the constant name already exists
+    if grep -q "^  static const String $var_name =" "$temp_file"; then
+        continue
+    fi
 
     # Print the static const line
     echo "  static const String $var_name = '$cleaned_line';" >> "$temp_file"
@@ -83,4 +91,4 @@ case "$(uname)" in
 esac
 
 # Clean up
-rm "$temp_file"
+rm "$temp_file" "$existing_constants_file"
