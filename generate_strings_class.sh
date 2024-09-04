@@ -47,12 +47,13 @@ while IFS= read -r line; do
     var_name=$(to_camel_case "$cleaned_line")
 
     # Check if the constant name already exists
-    if grep -q "^  static const String $var_name =" "$temp_file"; then
+    if grep -q "^  static const String $var_name =" "$existing_constants_file"; then
         continue
     fi
 
-    # Print the static const line
+    # Print the static const line and add it to the existing constants file
     echo "  static const String $var_name = '$cleaned_line';" >> "$temp_file"
+    echo "$var_name" >> "$existing_constants_file"
 done < "$file_path"
 
 # Close the class definition
