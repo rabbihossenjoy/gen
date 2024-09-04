@@ -23,10 +23,8 @@ to_camel_case() {
     echo "$words"
 }
 
-# Temporary file to hold the output
+# Temporary files to hold the output and existing constants
 temp_file=$(mktemp)
-
-# File to keep track of existing constants
 existing_constants_file=$(mktemp)
 
 # Start building the Strings class
@@ -46,8 +44,8 @@ while IFS= read -r line; do
     # Convert to camelCase variable name with up to 3 words
     var_name=$(to_camel_case "$cleaned_line")
 
-    # Check if the constant name already exists
-    if grep -q "^  static const String $var_name =" "$existing_constants_file"; then
+    # Check if the constant name already exists in the existing constants file
+    if grep -q "^$var_name$" "$existing_constants_file"; then
         continue
     fi
 
