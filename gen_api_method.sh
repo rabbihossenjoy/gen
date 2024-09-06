@@ -13,8 +13,12 @@ LOADING_VAR_NAME=${2:-isLoading}  # Use 'isLoading' if <LoadingVariableName> is 
 # Convert first letter of class name to lowercase for variable names
 MODEL_VAR_NAME="$(tr '[:upper:]' '[:lower:]' <<< ${MODEL_CLASS_NAME:0:1})${MODEL_CLASS_NAME:1}"
 
-# Ensure the loading variable name is properly capitalized with "Loading" appended
-LOADING_VAR_NAME_WITH_LOADING="${LOADING_VAR_NAME}Loading"
+# Determine the correct loading variable name and its version with "Loading" appended
+if [ "$LOADING_VAR_NAME" = "isLoading" ]; then
+    LOADING_VAR_NAME_WITH_LOADING="isLoading"
+else
+    LOADING_VAR_NAME_WITH_LOADING="${LOADING_VAR_NAME}Loading"
+fi
 
 # Create the Dart code
 DART_CODE=$(cat <<EOF
