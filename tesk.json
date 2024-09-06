@@ -1,0 +1,90 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+    {
+        "label": "Run Remove Unused Constants",
+        "type": "shell",
+        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/remove_unused_constants.sh | bash",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      },
+
+      {
+        "label": "Generate Strings Class",
+        "type": "shell",
+        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_strings_class.sh | bash",
+        "problemMatcher": []
+    },
+    {
+      "label": "Generate Dart Method",
+      "type": "shell",
+      "command": "zsh",
+      "args": [
+        "-c",
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/gen_api_method.sh | bash -s ${input:modelClassName} ${input:loadingVarName}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "detail": "Run gen_api_method.sh script from GitHub using Zsh."
+    },
+
+   /// Generate Views via Remote Script
+    {
+      "label": "Generate Views via Remote Script",
+      "type": "shell",
+      "command": "curl",
+      "args": [
+        "-sSL",
+        "https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_views.sh",
+        "|",
+        "bash",
+        "-s",
+        "${input:viewNames}"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "echo": true,
+        "reveal": "always",
+        "focus": false,
+        "panel": "shared"
+      },
+      "problemMatcher": [],
+      "detail": "This task fetches and runs the generate_views.sh script from GitHub using input for view names."
+    }
+  ],
+
+  "inputs": [
+    {
+      "id": "viewNames",
+      "type": "promptString",
+      "description": "Enter the view names separated by spaces (e.g., view1 view2 view3):",
+      "default": ""
+    },
+    {
+      "id": "modelClassName",
+      "type": "promptString",
+      "description": "Enter the Model Class Name"
+    },
+    {
+      "id": "loadingVarName",
+      "type": "promptString",
+      "description": "Enter the Loading Variable Name"
+    }
+  ],
+
+  
+  
+  }
+  
+
+
+
