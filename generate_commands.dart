@@ -97,6 +97,40 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
 ''';
   }
 
+  void appendRoute(String cpn) {
+    String routeCode = '''
+    GetPage(
+      name: Routes.${cpn}Screen,
+      page: () => const ${cpn}Screen(),
+    ),
+    ''';
+
+    File routeFile = File('lib/routes/route_pages.dart');
+
+    if (routeFile.existsSync()) {
+      // Read the content of the route file
+      String content = routeFile.readAsStringSync();
+
+      // Find the position to insert the new route code
+      int insertPosition = content.indexOf('static var list = [');
+
+      if (insertPosition != -1) {
+        // Insert the new route code at the appropriate position
+        int insertAfter = content.indexOf('[', insertPosition) + 1;
+        String updatedContent = content.substring(0, insertAfter) + '\n' + routeCode + content.substring(insertAfter);
+
+        // Write the updated content back to the route file
+        routeFile.writeAsStringSync(updatedContent);
+
+        print("Route for $cpn added to lib/routes/route_pages.dart");
+      } else {
+        print("Could not find the list in lib/routes/route_pages.dart");
+      }
+    } else {
+      print("Route file lib/routes/route_pages.dart does not exist.");
+    }
+  }
+
   for (var topicName in viewsList) {
     var cpn = capitalize(topicName);
     String command = src(topicName, cpn);
@@ -107,6 +141,9 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
     // Append generated commands to commands.text file
     File('lib/views/commands.text')
         .writeAsStringSync(command, mode: FileMode.append);
+
+    // Append route in lib/routes/route_pages.dart
+    appendRoute(cpn);
   }
 
   // Execute the generated commands
@@ -118,28 +155,3 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
     File('lib/views/commands.text').deleteSync();
   });
 }
-
-
-/*
- chmod +x run.sh   
-./run.sh addMoney2  
-
-static const String investmentScreen = '/investmentScreen';
-
- GetPage(
-      name: Routes.investmentScreen,
-      page: () => const InvestmentScreen(),
-      binding: InvestmentBinding(),
-),
-
-
-import 'package:get/get.dart';
-import '../views/investment/controller/investment_controller.dart';
-class InvestmentBinding extends Bindings {
-  @override
-  void dependencies() {
-    Get.put(InvestmentController());
-  }
-}
- */
-
