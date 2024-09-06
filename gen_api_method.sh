@@ -15,11 +15,10 @@ MODEL_VAR_NAME="$(tr '[:upper:]' '[:lower:]' <<< ${MODEL_CLASS_NAME:0:1})${MODEL
 
 # Determine the correct loading variable name and its version with "Loading" appended
 if [ "$LOADING_VAR_NAME" = "isLoading" ]; then
-    LOADING_VAR_NAME_WITH_LOADING="isLoading"
+    LOADING_VAR_NAME_WITH_LOADING="Loading"
 else
     LOADING_VAR_NAME_WITH_LOADING="${LOADING_VAR_NAME}Loading"
 fi
-
 # Create the Dart code
 DART_CODE=$(cat <<EOF
   final _is$LOADING_VAR_NAME_WITH_LOADING = false.obs;
