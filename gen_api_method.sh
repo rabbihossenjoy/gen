@@ -1,14 +1,14 @@
 #!/bin/bash
 
-# Check if two arguments are provided
-if [ "$#" -ne 2 ]; then
-    echo "Usage: sh gen_api_method.sh <ModelClassName> <LoadingVariableName>"
+# Check if at least one argument is provided
+if [ "$#" -lt 1 ]; then
+    echo "Usage: sh gen_api_method.sh <ModelClassName> [<LoadingVariableName>]"
     exit 1
 fi
 
 # Assign arguments to variables
 MODEL_CLASS_NAME=$1
-LOADING_VAR_NAME=$2
+LOADING_VAR_NAME=${2:-isLoading}  # Use 'isLoading' if <LoadingVariableName> is not provided
 
 # Convert first letter of class name to lowercase for variable names
 MODEL_VAR_NAME="$(tr '[:upper:]' '[:lower:]' <<< ${MODEL_CLASS_NAME:0:1})${MODEL_CLASS_NAME:1}"
