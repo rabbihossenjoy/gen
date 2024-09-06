@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Check if three arguments are provided
-if [ "$#" -ne 3 ]; then
-    echo "Usage: sh gen_api_method.sh <ModelClassName> <LoadingVariableName> <DummyArgument>"
+# Check if two arguments are provided
+if [ "$#" -ne 2 ]; then
+    echo "Usage: sh gen_api_method.sh <ModelClassName> <LoadingVariableName>"
     exit 1
 fi
 
@@ -37,9 +37,6 @@ DART_CODE=$(cat <<EOF
   }
 EOF
 )
-
-# Display the Dart code in the terminal
-# echo "$DART_CODE"  
 
 # Copy the Dart code to clipboard
 # Check the OS and use the appropriate clipboard tool
