@@ -1,14 +1,15 @@
 #!/bin/bash
 
 # Check if at least one argument is provided
-if [ "$#" -lt 1 ]; then
-    echo "Usage: sh gen_api_method.sh <ModelClassName> [<LoadingVariableName>]"
+if [ "$#" -lt 2 ]; then
+    echo "Usage: sh gen_api_method.sh <ModelClassName> <LoadingVariableName> [<HttpMethod>]"
     exit 1
 fi
 
 # Assign arguments to variables
 MODEL_CLASS_NAME=$1
 LOADING_VAR_NAME=${2:-isLoading}  # Use 'isLoading' if <LoadingVariableName> is not provided
+HTTP_METHOD=${3:-GET}  # Default to GET if not specified
 
 # Convert first letter of class name to lowercase for variable names
 MODEL_VAR_NAME="$(tr '[:upper:]' '[:lower:]' <<< ${MODEL_CLASS_NAME:0:1})${MODEL_CLASS_NAME:1}"
@@ -19,6 +20,17 @@ if [ "$LOADING_VAR_NAME" = "isLoading" ]; then
 else
     LOADING_VAR_NAME_WITH_LOADING="${LOADING_VAR_NAME}Loading"
 fi
+# Generate the body for POST requests if the method is POST
+if [ "$HTTP_METHOD" = "POST" ]; then
+    METHOD_LINE="method: HttpMethod.POST,"
+    BODY_LINE="body: {
+      'key': 'value',
+    },"
+else
+    METHOD_LINE=""
+    BODY_LINE=""
+fi
+
 # Create the Dart code
 DART_CODE=$(cat <<EOF
   final _is$LOADING_VAR_NAME_WITH_LOADING = false.obs;
@@ -28,13 +40,14 @@ DART_CODE=$(cat <<EOF
   $MODEL_CLASS_NAME get ${MODEL_VAR_NAME} => _$MODEL_VAR_NAME;
 
   Future<$MODEL_CLASS_NAME?> procceName() async {
+    $BODY_LINE
     return RequestProcess().request<$MODEL_CLASS_NAME>(
       fromJson: $MODEL_CLASS_NAME.fromJson,
       apiEndpoint: ApiEndpoint.,
       isLoading: _is$LOADING_VAR_NAME_WITH_LOADING,
+      $METHOD_LINE
       onSuccess: (value) {
         _$MODEL_VAR_NAME = value!;
-        var data = _$MODEL_VAR_NAME.data.bankBranches;
       },
     );
   }
