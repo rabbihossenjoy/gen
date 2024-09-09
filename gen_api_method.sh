@@ -29,12 +29,15 @@ fi
 # Generate the body for POST requests if the method is POST
 if [ "$HTTP_METHOD" = "POST" ]; then
     METHOD_LINE="method: HttpMethod.POST,"
-    BODY_LINE="body: {
+    BODY_LINE="body: inputBody,"
+    INPUT_BODY="
+     Map<String, dynamic> inputBody = {
       'key': 'value',
-    },"
+    };"
 else
     METHOD_LINE=""
     BODY_LINE=""
+    INPUT_BODY=""
 fi
 
 # Create the Dart code
@@ -49,12 +52,14 @@ DART_CODE=$(
   $MODEL_CLASS_NAME get ${MODEL_VAR_NAME} => _$MODEL_VAR_NAME;
 
   Future<$MODEL_CLASS_NAME?> procceName() async {
-    $BODY_LINE
+    $INPUT_BODY
+   
     return RequestProcess().request<$MODEL_CLASS_NAME>(
       fromJson: $MODEL_CLASS_NAME.fromJson,
       apiEndpoint: ApiEndpoint.,
       isLoading: _is$LOADING_VAR_NAME_WITH_LOADING,
       $METHOD_LINE
+      $BODY_LINE
       onSuccess: (value) {
         _$MODEL_VAR_NAME = value!;
       },
