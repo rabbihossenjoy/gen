@@ -1,6 +1,16 @@
 {
     "version": "2.0.0",
     "tasks": [
+      {
+        "label": "Generate Keystore",
+        "type": "shell",
+        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_keystore.sh | bash",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      },
     {
         "label": "Run Remove Unused Constants",
         "type": "shell",
@@ -24,7 +34,7 @@
       "command": "zsh",
       "args": [
         "-c",
-        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/gen_api_method.sh | bash -s ${input:modelClassName} ${input:loadingVarName}"
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/gen_api_method.sh | bash -s ${input:modelClassName} ${input:loadingVarName} ${input:method}"
       ],
       "group": {
         "kind": "build",
@@ -79,12 +89,21 @@
       "type": "promptString",
       "description": "Enter the Loading Variable Name"
     }
+    ,
+
+    {
+      "id": "method",
+      "type": "promptString",
+      "description": "Enter the HTTP Method (GET or POST)",
+      "default": "GET"
+    }
   ],
 
   
-  
   }
   
+
+
 
 
 
