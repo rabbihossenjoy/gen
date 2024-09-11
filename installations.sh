@@ -1,15 +1,14 @@
 #!/bin/sh
 
-# Define the path where both project.txt and the logo folder are located
+# Define paths
 SOURCE_PATH="$1"
-
-# Define the paths for project.txt, logo folder, and the Dart file
 PROJECT_FILE="$SOURCE_PATH/project.txt"
 LOGO_FOLDER="$SOURCE_PATH/logo"
 DART_FILE="lib/backend/services/api_endpoint.dart"
 NEW_LOGO_FOLDER="assets/logo"
+GOOGLE_SERVICES_JSON="android/app/google-services.json"
 
-# Check if the source path argument is provided
+# Check if source path is provided
 if [ "$#" -ne 1 ]; then
     echo "Usage: $0 <source_path>"
     exit 1
@@ -21,57 +20,63 @@ if [ ! -f "$PROJECT_FILE" ]; then
     exit 1
 fi
 
-# Extract URL, APP_NAME, and PACKAGE from project.txt
+# Extract values from project.txt
 URL=$(grep 'URL="' "$PROJECT_FILE" | sed 's/URL="//' | sed 's/",//')
 APP_NAME=$(grep 'APP_NAME="' "$PROJECT_FILE" | sed 's/APP_NAME="//' | sed 's/",//')
 PACKAGE=$(grep 'PACKAGE="' "$PROJECT_FILE" | sed 's/PACKAGE="//' | sed 's/",//')
+COLOR=$(grep 'COLOR="' "$PROJECT_FILE" | sed 's/COLOR="//' | sed 's/",//')
 
-# Check if the values were extracted
-if [ -z "$URL" ]; then
-    echo "No URL found in $PROJECT_FILE."
+# Check if values were extracted
+if [ -z "$URL" ] || [ -z "$APP_NAME" ] || [ -z "$PACKAGE" ] || [ -z "$COLOR" ]; then
+    echo "One or more values missing in $PROJECT_FILE."
     exit 1
 fi
 
-if [ -z "$APP_NAME" ]; then
-    echo "No APP_NAME found in $PROJECT_FILE."
-    exit 1
-fi
-
-if [ -z "$PACKAGE" ]; then
-    echo "No PACKAGE found in $PROJECT_FILE."
-    exit 1
-fi
-
-# Check if the Dart file exists
-if [ ! -f "$DART_FILE" ]; then
+# Update Dart file
+if [ -f "$DART_FILE" ]; then
+    sed -i.bak "s|static Color primaryDarkColor = const Color(0xFFFFFFFF);|static Color primaryDarkColor = const Color($COLOR);|g" "$DART_FILE"
+    sed -i.bak "s|static Color primaryLightColor = const Color(0xFFFFFFFF);|static Color primaryLightColor = const Color($COLOR);|g" "$DART_FILE"
+    sed -i.bak "s|static const String mainDomain = \".*\";|static const String mainDomain = \"$URL\";|g" "$DART_FILE"
+    echo "Updated Dart file with URL and color."
+else
     echo "The file $DART_FILE does not exist."
     exit 1
 fi
 
-# Use sed to replace the mainDomain value in the Dart file
-sed -i.bak "s|static const String mainDomain = \".*\";|static const String mainDomain = \"$URL\";|g" "$DART_FILE"
-
-echo "Updated mainDomain with URL: $URL in $DART_FILE."
-
-# Check if the logo folder exists
+# Copy logo folder
 if [ -d "$LOGO_FOLDER" ]; then
-    # Create the new folder (assets/logo) if it doesn't exist
     mkdir -p "$NEW_LOGO_FOLDER"
-
-    # Copy the contents from the logo folder to the assets/logo folder
     cp -r "$LOGO_FOLDER/"* "$NEW_LOGO_FOLDER/"
-
     echo "Files copied successfully from $LOGO_FOLDER to $NEW_LOGO_FOLDER."
 else
     echo "The folder $LOGO_FOLDER does not exist."
 fi
 
-# Run the Flutter commands to change app launcher
-flutter pub run flutter_launcher_icons
-# Run the Flutter commands to change app name and package name
-echo "Running Flutter command to rename the app to: $APP_NAME"
-flutter pub run rename_app:main all="$APP_NAME"
+# Update Google Services JSON
+if [ -f "$GOOGLE_SERVICES_JSON" ]; then
+    sed -i.bak "s|\"package_name\": \".*\"|\"package_name\": \"$PACKAGE\"|g" "$GOOGLE_SERVICES_JSON"
+    echo "Updated Google Services JSON with package name."
+else
+    echo "The file $GOOGLE_SERVICES_JSON does not exist."
+    exit 1
+fi
 
-echo "Running Flutter command to change the package name to: $PACKAGE"
+# Run Flutter commands
+flutter pub run flutter_launcher_icons
+flutter pub run rename_app:main all="$APP_NAME"
 flutter pub run change_app_package_name:main "$PACKAGE"
+
+# Build APK
 flutter build apk --split-per-abi --no-tree-shake-icons
+
+# Install APK on connected Android device using adb
+APK_PATH=$(find build/app/outputs/flutter-apk -name "*.apk" | head -n 1)
+
+if [ -n "$APK_PATH" ]; then
+    echo "Installing APK: $APK_PATH"
+    adb install -r "$APK_PATH"
+    echo "APK installed on device."
+else
+    echo "APK not found!"
+    exit 1
+fi
