@@ -11,6 +11,16 @@
         },
         "problemMatcher": []
       },
+      {
+        "label": "Generate Multi Language",
+        "type": "shell",
+        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/multi_language.sh | bash",
+        "group": {
+          "kind": "build",
+          "isDefault": true
+        },
+        "problemMatcher": []
+      },
     {
         "label": "Run Remove Unused Constants",
         "type": "shell",
@@ -102,8 +112,6 @@
   
   }
   
-
-
 
 
 
