@@ -8,20 +8,30 @@ echo "Enter your snippet body, followed by an empty line to finish:"
 body_lines=()
 while IFS= read -r line; do
     [[ -z "$line" ]] && break
-    body_lines+=("$line")
+    # Escape double quotes and backslashes for JSON compatibility
+    escaped_line=$(echo "$line" | sed 's/\\/\\\\/g' | sed 's/"/\\"/g')
+    body_lines+=("\"$escaped_line\"")
 done
 
-# Generate JSON output
-json_output=$(jq -n --arg prefix "$prefix" --argjson body "$(printf '%s\n' "${body_lines[@]}" | jq -R . | jq -s .)" '
+# Generate JSON output manually
+json_output=$(
+    cat <<EOF
 {
-    ($prefix): {
+    "$prefix": {
         "scope": "dart,flutter",
-        "prefix": $prefix,
-        "body": $body
+        "prefix": "$prefix",
+        "body": [
+            $(
+        IFS=,
+        echo "${body_lines[*]}"
+    )
+        ]
     }
-}')
+}
+EOF
+)
 
 # Output the JSON to a file or display it
 echo -e "\nGenerated Snippet JSON:\n$json_output"
-echo "$json_output" > snippet.json
+echo "$json_output" >snippet.json
 echo "Snippet saved to snippet.json"
