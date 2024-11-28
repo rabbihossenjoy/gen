@@ -1,42 +1,47 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-      {
-        "label": "Generate Keystore",
-        "type": "shell",
-        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_keystore.sh | bash",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": []
-      },
-      {
-        "label": "Generate Multi Language",
-        "type": "shell",
-        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/multi_language.sh | bash",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": []
-      },
+  "version": "2.0.0",
+  "tasks": [
     {
-        "label": "Run Remove Unused Constants",
-        "type": "shell",
-        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/remove_unused_constants.sh | bash",
-        "group": {
-          "kind": "build",
-          "isDefault": true
-        },
-        "problemMatcher": []
+      "label": "Generate Keystore",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_keystore.sh | bash",
+      "group": {
+        "kind": "build",
+        "isDefault": true
       },
-
-      {
-        "label": "Generate Strings Class",
-        "type": "shell",
-        "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_strings_class.sh | bash",
-        "problemMatcher": []
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Multi Language",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/multi_language.sh | bash",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Remove Unused Constants",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/remove_unused_constants.sh | bash",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Generate Strings Class",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_strings_class.sh | bash",
+      "problemMatcher": []
+    },
+    {
+      "label": "Assets Generate",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_assets.sh | bash",
+      "problemMatcher": []
     },
     {
       "label": "Generate Dart Method",
@@ -53,8 +58,7 @@
       "problemMatcher": [],
       "detail": "Run gen_api_method.sh script from GitHub using Zsh."
     },
-
-   /// Generate Views via Remote Script
+    /// Generate Views via Remote Script
     {
       "label": "Generate Views via Remote Script",
       "type": "shell",
@@ -81,7 +85,6 @@
       "detail": "This task fetches and runs the generate_views.sh script from GitHub using input for view names."
     }
   ],
-
   "inputs": [
     {
       "id": "viewNames",
@@ -98,9 +101,7 @@
       "id": "loadingVarName",
       "type": "promptString",
       "description": "Enter the Loading Variable Name"
-    }
-    ,
-
+    },
     {
       "id": "method",
       "type": "promptString",
@@ -108,10 +109,4 @@
       "default": "GET"
     }
   ],
-
-  
-  }
-  
-
-
-
+}
