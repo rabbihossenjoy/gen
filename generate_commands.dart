@@ -21,7 +21,7 @@ void main(List<String> args) {
 
   String src(String topicName, String cpn) {
     return '''
-mkdir -p $topicName/{controller,screen,widget} && \\
+mkdir -p $topicName/controller && mkdir -p $topicName/screen && mkdir -p $topicName/widget && \\
 touch $topicName/controller/${topicName}_controller.dart && \\
 touch $topicName/screen/${topicName}_screen.dart && \\
 touch $topicName/screen/${topicName}_mobile_screen.dart && \\
@@ -111,8 +111,10 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
       if (insertPosition != -1) {
         // Insert the new route code at the appropriate position
         int insertAfter = content.indexOf('[', insertPosition) + 1;
-        String updatedContent =
-            content.substring(0, insertAfter) + '\n' + routeCode + content.substring(insertAfter);
+        String updatedContent = content.substring(0, insertAfter) +
+            '\n' +
+            routeCode +
+            content.substring(insertAfter);
 
         // Write the updated content back to the route file
         routeFile.writeAsStringSync(updatedContent);
