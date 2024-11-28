@@ -22,13 +22,14 @@ void main(List<String> args) {
   String src(String topicName, String cpn) {
     return '''
 mkdir -p $topicName/{controller,screen,widget} && \\
-touch $topicName/controller/${topicName}_controller.dart \\
-      $topicName/screen/{${topicName}_screen.dart,${topicName}_mobile_screen.dart,${topicName}_tablet_screen.dart} && \\
+touch $topicName/controller/${topicName}_controller.dart && \\
+touch $topicName/screen/${topicName}_screen.dart && \\
+touch $topicName/screen/${topicName}_mobile_screen.dart && \\
+touch $topicName/screen/${topicName}_tablet_screen.dart && \\
 echo  \"""
 import 'package:get/get.dart';
 class ${cpn}Controller extends GetxController {}
 \""" > $topicName/controller/${topicName}_controller.dart && \\
-
 echo  \"""
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,20 +41,13 @@ class ${cpn}Screen extends GetView<${cpn}Controller> {
   const ${cpn}Screen({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    
     return ResponsiveLayout(
       mobile: ${cpn}MobileScreen(),
       tablet: ${cpn}TabletScreen(),
     );
   }
 }
-\
-/*
-/// code for others 
-
- */
-
-""" > $topicName/screen/${topicName}_screen.dart && \\
+\""" > $topicName/screen/${topicName}_screen.dart && \\
 echo  \"""
 part of '${topicName}_screen.dart';
 class ${cpn}TabletScreen extends GetView<${cpn}Controller> {
@@ -117,7 +111,8 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
       if (insertPosition != -1) {
         // Insert the new route code at the appropriate position
         int insertAfter = content.indexOf('[', insertPosition) + 1;
-        String updatedContent = content.substring(0, insertAfter) + '\n' + routeCode + content.substring(insertAfter);
+        String updatedContent =
+            content.substring(0, insertAfter) + '\n' + routeCode + content.substring(insertAfter);
 
         // Write the updated content back to the route file
         routeFile.writeAsStringSync(updatedContent);
