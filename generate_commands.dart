@@ -26,10 +26,60 @@ touch $topicName/controller/${topicName}_controller.dart && \\
 touch $topicName/screen/${topicName}_screen.dart && \\
 touch $topicName/screen/${topicName}_mobile_screen.dart && \\
 touch $topicName/screen/${topicName}_tablet_screen.dart && \\
-echo "\\\"\\\"\\\"\\nimport 'package:get/get.dart';\\nclass ${cpn}Controller extends GetxController {}\\n\\\"\\\"\\\"" > $topicName/controller/${topicName}_controller.dart && \\
-echo "\\\"\\\"\\\"\\nimport 'package:flutter/material.dart';\\nimport 'package:get/get.dart';\\nimport '../../../base/utils/basic_import.dart';\\nimport '../controller/${topicName}_controller.dart';\\npart '${topicName}_tablet_screen.dart';\\npart '${topicName}_mobile_screen.dart';\\nclass ${cpn}Screen extends GetView<${cpn}Controller> {\\n  const ${cpn}Screen({Key? key}) : super(key: key);\\n  @override\\n  Widget build(BuildContext context) {\\n    return ResponsiveLayout(\\n      mobile: ${cpn}MobileScreen(),\\n      tablet: ${cpn}TabletScreen(),\\n    );\\n  }\\n}\\n\\\"\\\"\\\"" > $topicName/screen/${topicName}_screen.dart && \\
-echo "\\\"\\\"\\\"\\npart of '${topicName}_screen.dart';\\nclass ${cpn}TabletScreen extends GetView<${cpn}Controller> {\\n  const ${cpn}TabletScreen({super.key});\\n  @override\\n  Widget build(BuildContext context) {\\n    return Scaffold(\\n      appBar: const CustomAppBar('${cpn} Tablet Screen'),\\n      body: _bodyWidget(context),\\n    );\\n  }\\n  _bodyWidget(BuildContext context) {\\n    return const SafeArea(\\n      child: Column(\\n        children: [],\\n      ),\\n    );\\n  }\\n}\\n\\\"\\\"\\\"" > $topicName/screen/${topicName}_tablet_screen.dart && \\
-echo "\\\"\\\"\\\"\\npart of '${topicName}_screen.dart';\\nclass ${cpn}MobileScreen extends GetView<${cpn}Controller> {\\n  const ${cpn}MobileScreen({super.key});\\n  @override\\n  Widget build(BuildContext context) {\\n    return Scaffold(\\n      appBar: const CustomAppBar('${cpn} Mobile Screen'),\\n      body: _bodyWidget(context),\\n    );\\n  }\\n  _bodyWidget(BuildContext context) {\\n    return const SafeArea(\\n      child: Column(\\n        children: [],\\n      ),\\n    );\\n  }\\n}\\n\\\"\\\"\\\"" > $topicName/screen/${topicName}_mobile_screen.dart
+echo "import 'package:get/get.dart';
+class ${cpn}Controller extends GetxController {}" > $topicName/controller/${topicName}_controller.dart && \\
+echo "import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import '../../../base/utils/basic_import.dart';
+import '../controller/${topicName}_controller.dart';
+part '${topicName}_tablet_screen.dart';
+part '${topicName}_mobile_screen.dart';
+class ${cpn}Screen extends GetView<${cpn}Controller> {
+  const ${cpn}Screen({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ResponsiveLayout(
+      mobile: ${cpn}MobileScreen(),
+      tablet: ${cpn}TabletScreen(),
+    );
+  }
+}" > $topicName/screen/${topicName}_screen.dart && \\
+echo "part of '${topicName}_screen.dart';
+class ${cpn}TabletScreen extends GetView<${cpn}Controller> {
+  const ${cpn}TabletScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar('${cpn} Tablet Screen'),
+      body: _bodyWidget(context),
+    );
+  }
+  _bodyWidget(BuildContext context) {
+    return const SafeArea(
+      child: Column(
+        children: [],
+      ),
+    );
+  }
+}" > $topicName/screen/${topicName}_tablet_screen.dart && \\
+echo "part of '${topicName}_screen.dart';
+class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
+  const ${cpn}MobileScreen({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const CustomAppBar('${cpn} Mobile Screen'),
+      body: _bodyWidget(context),
+    );
+  }
+  _bodyWidget(BuildContext context) {
+    return const SafeArea(
+      child: Column(
+        children: [],
+      ),
+    );
+  }
+}" > $topicName/screen/${topicName}_mobile_screen.dart
 ''';
   }
 
@@ -86,7 +136,7 @@ echo "\\\"\\\"\\\"\\npart of '${topicName}_screen.dart';\\nclass ${cpn}MobileScr
   }
 
   // Execute the generated commands
-  Process.run('sh', ['-c', 'cd lib/views && bash commands.text']).then((result) {
+  Process.run('sh', ['-c', 'cd lib/views && sh commands.text']).then((result) {
     print(result.stdout);
     print(result.stderr);
 
