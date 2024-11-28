@@ -22,11 +22,29 @@ if [ ! -f "$DART_SCRIPT" ]; then
     exit 1
 fi
 
+# Verify Dart is installed
+if ! command -v dart &> /dev/null; then
+    echo "Error: Dart is not installed. Please install Dart and ensure it's in your PATH."
+    exit 1
+fi
+
+# Check if the current user has write permissions
+if [ ! -w "$(pwd)" ]; then
+    echo "Error: Write permissions are required for the current directory."
+    exit 1
+fi
+
 # Pass the provided view names as arguments to the Dart script
 echo "Running Dart script with view names: $@"
-dart run $DART_SCRIPT "$@"
+dart run "$DART_SCRIPT" "$@"
+
+# Check if the Dart script ran successfully
+if [ $? -ne 0 ]; then
+    echo "Error: Dart script execution failed."
+    exit 1
+fi
 
 # Clean up the downloaded Dart script (optional)
-rm -f $DART_SCRIPT
+rm -f "$DART_SCRIPT"
 
-echo "Generation completed."
+echo "Generation completed successfully."
