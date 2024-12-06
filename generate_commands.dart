@@ -47,6 +47,7 @@ void main(List<String> args) {
     GetPage(
       name: Routes.${topicName}Screen,
       page: () => const ${cpn}Screen(),
+      binding: ${cpn}Binding(),
     ),
     ''';
 
@@ -87,6 +88,7 @@ void main(List<String> args) {
         'lib/views/$topicName/screen/${topicName}_mobile_screen.dart';
     final tabletScreenPath =
         'lib/views/$topicName/screen/${topicName}_tablet_screen.dart';
+    final bindingPath = 'lib/bindings/${topicName}_binding.dart';
 
     // Content
     final controllerContent = '''
@@ -163,13 +165,24 @@ class ${cpn}TabletScreen extends GetView<${cpn}Controller> {
   }
 }
 ''';
+    // Add binding content
+    final bindingContent = '''
+import 'package:get/get.dart';
+import '../views/$topicName/controller/${topicName}_controller.dart';
 
+class ${cpn}Binding extends Bindings {
+  @override
+  void dependencies() {
+    Get.lazyPut(() => ${cpn}Controller());
+  }
+}
+''';
     // Write files
     writeFile(controllerPath, controllerContent);
     writeFile(screenPath, screenContent);
     writeFile(mobileScreenPath, mobileScreenContent);
     writeFile(tabletScreenPath, tabletScreenContent);
-
+    writeFile(bindingPath, bindingContent);
     // Append routes (modified to pass topicName)
     appendRoute(cpn, topicName);
   }
