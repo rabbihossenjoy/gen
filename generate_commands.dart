@@ -19,14 +19,56 @@ void main(List<String> args) {
     File(path).writeAsStringSync(content);
   }
 
+  void appendRoute(String cpn) {
+    String routeCode = '''
+    GetPage(
+      name: Routes.${cpn}Screen,
+      page: () => const ${cpn}Screen(),
+    ),
+    ''';
+
+    File routeFile = File('lib/routes/route_pages.dart');
+
+    if (routeFile.existsSync()) {
+      // Read the content of the route file
+      String content = routeFile.readAsStringSync();
+
+      // Find the position to insert the new route code
+      int insertPosition = content.indexOf('static var list = [');
+
+      if (insertPosition != -1) {
+        // Insert the new route code at the appropriate position
+        int insertAfter = content.indexOf('[', insertPosition) + 1;
+        String updatedContent = content.substring(0, insertAfter) +
+            '\n' +
+            routeCode +
+            content.substring(insertAfter);
+
+        // Write the updated content back to the route file
+        routeFile.writeAsStringSync(updatedContent);
+
+        print("Route for $cpn added to lib/routes/route_pages.dart");
+      } else {
+        print("Could not find the list in lib/routes/route_pages.dart");
+      }
+    } else {
+      print("Route file lib/routes/route_pages.dart does not exist.");
+    }
+  }
+
   for (var topicName in viewsList) {
     var cpn = capitalize(topicName);
+    // Create widgets directory
+    Directory('lib/views/$topicName/widget').createSync(recursive: true);
 
     // Paths
-    final controllerPath = 'lib/views/$topicName/controller/${topicName}_controller.dart';
+    final controllerPath =
+        'lib/views/$topicName/controller/${topicName}_controller.dart';
     final screenPath = 'lib/views/$topicName/screen/${topicName}_screen.dart';
-    final mobileScreenPath = 'lib/views/$topicName/screen/${topicName}_mobile_screen.dart';
-    final tabletScreenPath = 'lib/views/$topicName/screen/${topicName}_tablet_screen.dart';
+    final mobileScreenPath =
+        'lib/views/$topicName/screen/${topicName}_mobile_screen.dart';
+    final tabletScreenPath =
+        'lib/views/$topicName/screen/${topicName}_tablet_screen.dart';
 
     // Content
     final controllerContent = '''
@@ -104,48 +146,14 @@ class ${cpn}TabletScreen extends GetView<${cpn}Controller> {
 }
 ''';
 
- ///   
-  void appendRoute(String cpn) {
-    String routeCode = '''
-    GetPage(
-      name: Routes.${cpn}Screen,
-      page: () => const ${cpn}Screen(),
-    ),
-    ''';
-
-    File routeFile = File('lib/routes/route_pages.dart');
-
-    if (routeFile.existsSync()) {
-      // Read the content of the route file
-      String content = routeFile.readAsStringSync();
-
-      // Find the position to insert the new route code
-      int insertPosition = content.indexOf('static var list = [');
-
-      if (insertPosition != -1) {
-        // Insert the new route code at the appropriate position
-        int insertAfter = content.indexOf('[', insertPosition) + 1;
-        String updatedContent = content.substring(0, insertAfter) +
-            '\n' +
-            routeCode +
-            content.substring(insertAfter);
-
-        // Write the updated content back to the route file
-        routeFile.writeAsStringSync(updatedContent);
-
-        print("Route for $cpn added to lib/routes/route_pages.dart");
-      } else {
-        print("Could not find the list in lib/routes/route_pages.dart");
-      }
-    } else {
-      print("Route file lib/routes/route_pages.dart does not exist.");
-    }
-  }
     // Write files
     writeFile(controllerPath, controllerContent);
     writeFile(screenPath, screenContent);
     writeFile(mobileScreenPath, mobileScreenContent);
     writeFile(tabletScreenPath, tabletScreenContent);
+
+    // Append route
+    appendRoute(cpn);
   }
 
   print('All files have been generated successfully!');
