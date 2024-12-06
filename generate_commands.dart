@@ -77,7 +77,7 @@ void main(List<String> args) {
     // Create directories
     Directory('lib/views/$topicName/controller').createSync(recursive: true);
     Directory('lib/views/$topicName/screen').createSync(recursive: true);
-    Directory('lib/views/$topicName/widgets').createSync(recursive: true);
+    Directory('lib/views/$topicName/widget').createSync(recursive: true);
 
     // Paths
     final controllerPath =
