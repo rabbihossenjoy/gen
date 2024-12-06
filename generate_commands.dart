@@ -104,6 +104,43 @@ class ${cpn}TabletScreen extends GetView<${cpn}Controller> {
 }
 ''';
 
+ ///   
+  void appendRoute(String cpn) {
+    String routeCode = '''
+    GetPage(
+      name: Routes.${cpn}Screen,
+      page: () => const ${cpn}Screen(),
+    ),
+    ''';
+
+    File routeFile = File('lib/routes/route_pages.dart');
+
+    if (routeFile.existsSync()) {
+      // Read the content of the route file
+      String content = routeFile.readAsStringSync();
+
+      // Find the position to insert the new route code
+      int insertPosition = content.indexOf('static var list = [');
+
+      if (insertPosition != -1) {
+        // Insert the new route code at the appropriate position
+        int insertAfter = content.indexOf('[', insertPosition) + 1;
+        String updatedContent = content.substring(0, insertAfter) +
+            '\n' +
+            routeCode +
+            content.substring(insertAfter);
+
+        // Write the updated content back to the route file
+        routeFile.writeAsStringSync(updatedContent);
+
+        print("Route for $cpn added to lib/routes/route_pages.dart");
+      } else {
+        print("Could not find the list in lib/routes/route_pages.dart");
+      }
+    } else {
+      print("Route file lib/routes/route_pages.dart does not exist.");
+    }
+  }
     // Write files
     writeFile(controllerPath, controllerContent);
     writeFile(screenPath, screenContent);
