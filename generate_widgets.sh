@@ -6,6 +6,7 @@ if [ -z "$1" ]; then
   exit 1
 fi
 
+# Input parameters
 VIEW_NAME=$1
 WIDGET_NAMES=("${@:2}") # All arguments after the view name
 WIDGET_DIR="lib/views/${VIEW_NAME}/widget"
@@ -54,10 +55,20 @@ EOL
   WIDGET_CONSTRUCTORS+="${WIDGET_CLASS_NAME}(), "
 done
 
-# Remove trailing comma and space
+# Remove trailing comma and space from the constructors list
 WIDGET_CONSTRUCTORS=$(echo "$WIDGET_CONSTRUCTORS" | sed 's/, $//')
 
 # Copy widget constructors to clipboard
-echo "$WIDGET_CONSTRUCTORS" | pbcopy 2>/dev/null || xclip -selection clipboard 2>/dev/null || echo "Clipboard functionality not supported on this system."
-
-echo "Copied widget constructors to clipboard: $WIDGET_CONSTRUCTORS"
+if command -v pbcopy &>/dev/null; then
+  echo "$WIDGET_CONSTRUCTORS" | pbcopy
+  echo "Copied widget constructors to clipboard using pbcopy."
+elif command -v xclip &>/dev/null; then
+  echo "$WIDGET_CONSTRUCTORS" | xclip -selection clipboard
+  echo "Copied widget constructors to clipboard using xclip."
+elif command -v xsel &>/dev/null; then
+  echo "$WIDGET_CONSTRUCTORS" | xsel --clipboard --input
+  echo "Copied widget constructors to clipboard using xsel."
+else
+  echo "Clipboard functionality not supported on this system."
+  echo "Widget constructors: $WIDGET_CONSTRUCTORS"
+fi
