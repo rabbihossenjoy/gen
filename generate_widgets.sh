@@ -10,19 +10,30 @@ fi
 VIEW_NAME=$1
 WIDGET_NAMES=("${@:2}") # All arguments after the view name
 WIDGET_DIR="lib/views/${VIEW_NAME}/widget"
+SCREEN_FILE="lib/views/${VIEW_NAME}/screen/${VIEW_NAME}_screen.dart"
 
 # Function to convert strings like 'top_bar' to 'TopBar'
 to_camel_case() {
   echo "$1" | awk -F '_' '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1' OFS=''
 }
 
-# Create the directory for widgets
+# Create directories for widgets and screen
 mkdir -p "$WIDGET_DIR"
+mkdir -p "$(dirname "$SCREEN_FILE")"
+
+# Create the main screen file with a `part` directive if not already present
+if [ ! -f "$SCREEN_FILE" ]; then
+  cat >"$SCREEN_FILE" <<EOL
+import 'package:flutter/material.dart';
+
+EOL
+  echo "Generated $SCREEN_FILE"
+fi
 
 # Initialize a variable to store widget constructors for copying
 WIDGET_CONSTRUCTORS=""
 
-# Generate widget files
+# Generate widget files with `part of` directive
 for WIDGET_NAME in "${WIDGET_NAMES[@]}"; do
   WIDGET_FILE="${WIDGET_DIR}/${WIDGET_NAME}.dart"
   WIDGET_CLASS_NAME=$(to_camel_case "$WIDGET_NAME")
@@ -35,7 +46,7 @@ for WIDGET_NAME in "${WIDGET_NAMES[@]}"; do
 
   # Create the widget file with boilerplate code
   cat >"$WIDGET_FILE" <<EOL
-import 'package:flutter/material.dart';
+part of '../screen/${VIEW_NAME}_screen.dart';
 
 class $WIDGET_CLASS_NAME extends StatelessWidget {
   const $WIDGET_CLASS_NAME({Key? key}) : super(key: key);
@@ -50,6 +61,12 @@ class $WIDGET_CLASS_NAME extends StatelessWidget {
 EOL
 
   echo "Generated $WIDGET_FILE"
+
+  # Append the part directive to the screen file
+  if ! grep -q "part '../widget/${WIDGET_NAME}.dart';" "$SCREEN_FILE"; then
+    echo "part '../widget/${WIDGET_NAME}.dart';" >>"$SCREEN_FILE"
+    echo "Added part directive for $WIDGET_NAME to $SCREEN_FILE"
+  fi
 
   # Append the constructor to the clipboard string
   WIDGET_CONSTRUCTORS+="${WIDGET_CLASS_NAME}(), "
