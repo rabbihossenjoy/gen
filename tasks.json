@@ -83,6 +83,21 @@
       },
       "problemMatcher": [],
       "detail": "This task fetches and runs the generate_views.sh script from GitHub using input for view names."
+    },
+    {
+      "label": "Generate Widgets",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl -s https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_widgets.sh | bash -s -- ${input:view_name} ${input:widget_names}"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "This task create widgets"
     }
   ],
   "inputs": [
@@ -107,6 +122,16 @@
       "type": "promptString",
       "description": "Enter the HTTP Method (GET or POST)",
       "default": "GET"
+    },
+    {
+      "id": "view_name",
+      "type": "promptString",
+      "description": "Enter the view name (e.g., add_money)"
+    },
+    {
+      "id": "widget_names",
+      "type": "promptString",
+      "description": "Enter the widget names separated by spaces (e.g., top_bar transactions)"
     }
   ],
 }
