@@ -48,7 +48,7 @@ for WIDGET_NAME in "${WIDGET_NAMES[@]}"; do
   cat >"$WIDGET_FILE" <<EOL
 part of '../screen/${VIEW_NAME}_screen.dart';
 
-class $WIDGET_CLASS_NAME extends StatelessWidget {
+class $WIDGET_CLASS_NAME extends GetView<${VIEW_NAME}Controller> {
   const $WIDGET_CLASS_NAME({Key? key}) : super(key: key);
 
   @override
