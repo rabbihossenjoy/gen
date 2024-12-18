@@ -17,6 +17,10 @@ to_camel_case() {
   echo "$1" | awk -F '_' '{for(i=1;i<=NF;i++) $i=toupper(substr($i,1,1)) tolower(substr($i,2))}1' OFS=''
 }
 
+# Convert VIEW_NAME to PascalCase for the controller
+VIEW_NAME_PASCAL=$(to_camel_case "$VIEW_NAME")
+CONTROLLER_CLASS_NAME="${VIEW_NAME_PASCAL}Controller"
+
 # Create directories for widgets and screen
 mkdir -p "$WIDGET_DIR"
 mkdir -p "$(dirname "$SCREEN_FILE")"
@@ -25,7 +29,23 @@ mkdir -p "$(dirname "$SCREEN_FILE")"
 if [ ! -f "$SCREEN_FILE" ]; then
   cat >"$SCREEN_FILE" <<EOL
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
+part '../widget/${VIEW_NAME}_widgets.dart';
+
+class ${VIEW_NAME_PASCAL}Screen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('${VIEW_NAME_PASCAL}'),
+      ),
+      body: Container(
+        child: Text('${VIEW_NAME_PASCAL}Screen'),
+      ),
+    );
+  }
+}
 EOL
   echo "Generated $SCREEN_FILE"
 fi
@@ -48,7 +68,7 @@ for WIDGET_NAME in "${WIDGET_NAMES[@]}"; do
   cat >"$WIDGET_FILE" <<EOL
 part of '../screen/${VIEW_NAME}_screen.dart';
 
-class $WIDGET_CLASS_NAME extends GetView<${VIEW_NAME}Controller> {
+class $WIDGET_CLASS_NAME extends GetView<$CONTROLLER_CLASS_NAME> {
   const $WIDGET_CLASS_NAME({Key? key}) : super(key: key);
 
   @override
