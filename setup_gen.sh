@@ -5,7 +5,7 @@ GEN_DIR="$HOME/automatc_code/gen"
 
 if [ ! -d "$GEN_DIR" ]; then
   echo "Cloning gen repository from GitHub..."
-  git clone https://github.com/rabbihossenjoy/gen.git "$GEN_DIR"
+  git clone https://github.com/rabbihossen/gen.git "$GEN_DIR"
 else
   echo "Gen repository already exists at $GEN_DIR"
 fi
