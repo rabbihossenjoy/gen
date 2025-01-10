@@ -90,6 +90,7 @@ class $WIDGET_CLASS_NAME extends GetView<$CONTROLLER_CLASS_NAME> {
           Dimensions.paddingSize * 0.42,
         ),
         child: Column(
+          crossAxisAlignment: crossStart,
           children: [
             TextWidget(
               '$WIDGET_CLASS_NAME Widget',
