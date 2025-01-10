@@ -93,7 +93,7 @@ class $WIDGET_CLASS_NAME extends GetView<$CONTROLLER_CLASS_NAME> {
           children: [
             TextWidget(
               '$WIDGET_CLASS_NAME Widget',
-              typographyStyle: TypographyStyle.headlineLarge,
+              typographyStyle: TypographyStyle.titleLarge,
               color: CustomColor.whiteColor,
               fontWeight: FontWeight.w500,
             ),
