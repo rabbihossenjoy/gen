@@ -73,9 +73,36 @@ class $WIDGET_CLASS_NAME extends GetView<$CONTROLLER_CLASS_NAME> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Text('$WIDGET_CLASS_NAME Widget'),
+    return 
+    Card(
+      elevation: 0,
+      margin: EdgeInsets.only(
+        left: Dimensions.defaultHorizontalSize,
+        right: Dimensions.defaultHorizontalSize,
+        top: Dimensions.verticalSize * 0.67,
+      ),
+      color: Colors.pink,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(Dimensions.radius),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(
+          Dimensions.paddingSize * 0.42,
+        ),
+        child: Column(
+          children: [
+            TextWidget(
+              '$WIDGET_CLASS_NAME Widget',
+              typographyStyle: TypographyStyle.headlineLarge,
+              color: CustomColor.whiteColor,
+              fontWeight: FontWeight.w500,
+            ),
+          ],
+        ),
+      ),
     );
+    
+  
   }
 }
 EOL
