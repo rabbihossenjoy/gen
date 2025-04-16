@@ -93,4 +93,5 @@ echo ""
 echo "✅ Model file updated: $MODEL_FILE"
 echo "🗂️  Original backup saved at: $BACKUP_MODEL_FILE"
 # Remove temp files
-rm -f "$FIELDS_FILE" "$USED_FIELDS_FILE" "$UNUSED_FIELDS_FILE" "BACKUP_MODEL_FILE"
+rm -f "$FIELDS_FILE" "$USED_FIELDS_FILE" "$UNUSED_FIELDS_FILE" "$BACKUP_MODEL_FILE"
+
