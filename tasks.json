@@ -98,7 +98,33 @@
         "isDefault": true
       },
       "detail": "This task create widgets"
-    }
+    },
+    // Clean Flutter Model
+    {
+      "label": "Clean Model",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl -s https://raw.githubusercontent.com/rabbihossenjoy/gen/main/clean_model.sh | bash -s -- ${input:model_path}"
+      ],
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "detail": "This task clean model (remove unused fields, model)"
+    },
+    {
+      "label": "Run Setup Gen",
+      "type": "shell",
+      "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/setup_gen.sh | bash",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
   ],
   "inputs": [
     {
@@ -132,6 +158,11 @@
       "id": "widget_names",
       "type": "promptString",
       "description": "Enter the widget names separated by spaces (e.g., top_bar transactions)"
+    },
+    {
+      "id": "model_path",
+      "type": "promptString",
+      "description": "Enter the model path here (e.g., lib/views/view_name/model/model_name.dart )"
     }
   ],
 }
