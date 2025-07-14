@@ -2,6 +2,22 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "🧬 Generate Dart Model from JSON",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "cat << EOF > /tmp/json_input_temp.json\n${input:jsonText}\nEOF\ncurl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/json_to_dart_model.sh | bash -s ${input:viewName} ${input:className} /tmp/json_input_temp.json\nrm /tmp/json_input_temp.json"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "Generate Keystore",
       "type": "shell",
       "command": "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/generate_keystore.sh | bash",
@@ -99,22 +115,6 @@
       },
       "detail": "This task create widgets"
     },
-    // Clean Flutter Model
-    {
-      "label": "Clean Model",
-      "type": "shell",
-      "command": "bash",
-      "args": [
-        "-c",
-        "curl -s https://raw.githubusercontent.com/rabbihossenjoy/gen/main/clean_model.sh | bash -s -- ${input:model_path}"
-      ],
-      "problemMatcher": [],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "This task clean model (remove unused fields, model)"
-    },
     {
       "label": "Run Setup Gen",
       "type": "shell",
@@ -160,9 +160,24 @@
       "description": "Enter the widget names separated by spaces (e.g., top_bar transactions)"
     },
     {
-      "id": "model_path",
+      "id": "modelClassName",
       "type": "promptString",
-      "description": "Enter the model path here (e.g., lib/views/view_name/model/model_name.dart )"
+      "description": "Enter model class name (e.g. User)"
+    },
+    {
+      "id": "jsonText",
+      "type": "promptString",
+      "description": "Paste raw JSON"
+    },
+    {
+      "id": "viewName",
+      "type": "promptString",
+      "description": "Enter view folder (e.g. add_money)"
+    },
+    {
+      "id": "className",
+      "type": "promptString",
+      "description": "Enter Dart class name (e.g. AddMoneyModel)"
     }
   ],
 }
