@@ -2,12 +2,13 @@
 
 set -e
 
-RAW_JSON="$1"
-VIEW_NAME="$2"
-CLASS_NAME="$3"
+# Read JSON from stdin
+RAW_JSON=$(cat)
+VIEW_NAME="$1"
+CLASS_NAME="$2"
 
 if [ -z "$RAW_JSON" ] || [ -z "$VIEW_NAME" ] || [ -z "$CLASS_NAME" ]; then
-    echo "❌ Usage: bash json_to_dart_model.sh '<json>' view_name ClassName"
+    echo "❌ Usage: echo '<json>' | bash json_to_dart_model.sh view_name ClassName"
     exit 1
 fi
 
