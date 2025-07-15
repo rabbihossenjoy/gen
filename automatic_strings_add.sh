@@ -1,7 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-# Read piped input
-input=$(cat | tr -d '\r')
+input="$1"
 
 if [ -z "$input" ]; then
   echo "❌ No input provided."
