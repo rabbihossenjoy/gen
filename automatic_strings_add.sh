@@ -82,8 +82,13 @@ echo "✅ strings.dart updated successfully."
 rm "$temp_constants_file" "$temp_updated_file" "$existing_constants_file"
 
 # Open file in VS Code
+RELATIVE_FILE="lib/languages/strings.dart"
+ABSOLUTE_FILE="$(pwd)/$RELATIVE_FILE"
+
+# Open file in VS Code
 if command -v code >/dev/null 2>&1; then
-  code "$output_file"
+  code -r "$ABSOLUTE_FILE"
+  echo "🪟 Opened $RELATIVE_FILE in VS Code"
 else
-  echo "⚠️ VS Code CLI 'code' not found. You can open $output_file manually."
+  echo "⚠️ VS Code CLI 'code' not found. Please open $RELATIVE_FILE manually."
 fi
