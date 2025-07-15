@@ -2,6 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "✨ Add Strings",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/automatic_strings_add.sh | bash -s \"${input:stringList}\""
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      },
+      "problemMatcher": []
+    },
+    {
       "label": "🧬 Generate Dart Model from JSON",
       "type": "shell",
       "command": "bash",
@@ -178,6 +192,12 @@
       "id": "className",
       "type": "promptString",
       "description": "Enter Dart class name (e.g. AddMoneyModel)"
+    },
+    {
+      "id": "stringList",
+      "type": "promptString",
+      "description": "Enter strings (comma-separated):",
+      "default": "Add Money, Money Out, Preview"
     }
   ],
 }
