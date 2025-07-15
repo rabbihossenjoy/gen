@@ -81,3 +81,13 @@ echo "✅ strings.dart updated successfully."
 # Clean up
 rm "$temp_constants_file" "$temp_updated_file" "$existing_constants_file"
 
+# Open in editor
+if command -v code >/dev/null 2>&1; then
+  code "$output_file"
+elif command -v open >/dev/null 2>&1; then
+  open "$output_file"
+elif command -v xdg-open >/dev/null 2>&1; then
+  xdg-open "$output_file"
+else
+  echo "⚠️ Can't auto-open file. Please open $output_file manually."
+fi
