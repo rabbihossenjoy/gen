@@ -22,7 +22,7 @@ to_snake_case() {
 }
 
 FILE_NAME="$(to_snake_case "$CLASS_NAME")"
-MODEL_DIR="views/$VIEW_NAME/model"
+MODEL_DIR="lib/views/$VIEW_NAME/model"
 RELATIVE_DART_FILE="$MODEL_DIR/${FILE_NAME}.dart"
 ABSOLUTE_DART_FILE="$(pwd)/$RELATIVE_DART_FILE"
 
