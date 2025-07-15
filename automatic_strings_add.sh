@@ -78,6 +78,15 @@ esac
 
 echo "✅ strings.dart updated successfully."
 
+echo "✅ strings.dart updated successfully."
+
+# Open file in VS Code if possible
+if command -v code >/dev/null 2>&1; then
+  code lib/languages/strings.dart
+else
+  echo "⚠️ VS Code CLI 'code' command not found. Open lib/languages/strings.dart manually."
+fi
+
 # Clean up
 rm "$temp_constants_file" "$temp_updated_file" "$existing_constants_file"
 
