@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # This script automates adding new string constants to a Dart file.
-# It formats keys as "Strings.key", copies them individually for clipboard managers,
-# and displays a loading animation during processing.
+# It formats keys as "Strings.key", copies them for clipboard managers,
+# and shows a loading animation only for multiple inputs.
 
 # --- Loading Animation Function ---
 show_loading() {
@@ -60,17 +60,14 @@ main() {
   }
 
   # --- Main Processing ---
-  # Ensure the output directory and file exist.
   mkdir -p "$(dirname "$output_file")"
   if [ ! -f "$output_file" ]; then
     echo "class Strings {" > "$output_file"
     echo "}" >> "$output_file"
   fi
 
-  # Extract existing constant keys.
   grep -oE 'static const String [a-zA-Z0-9_]+' "$output_file" | awk '{print $4}' > "$existing_constants_file"
 
-  # Process input and prepare new constants.
   echo "$input" | tr ',' '\n' | while read -r line; do
     cleaned_line=$(echo "$line" | sed 's/[",]//g' | xargs)
     [ -z "$cleaned_line" ] && continue
@@ -83,13 +80,11 @@ main() {
     echo "$var_name" >> "$new_keys_file"
   done
 
-  # Exit if no new strings were added.
   if [ ! -s "$new_keys_file" ]; then
     echo "✅ No new strings to add."
     exit 0
   fi
 
-  # Insert new constants into the Dart file.
   inserted="false"
   while IFS= read -r line; do
     if echo "$line" | grep -q "^[[:space:]]*}$" && [ "$inserted" != "true" ]; then
@@ -99,24 +94,27 @@ main() {
     echo "$line" >> "$temp_updated_file"
   done < "$output_file"
 
-  # Overwrite the original file.
   cat "$temp_updated_file" > "$output_file"
 
-  # --- Copy keys to clipboard with the new format ---
   while IFS= read -r key; do
     if [ -n "$key" ]; then
-      # Format the key as "Strings.key" and copy it.
       echo -n "Strings.$key" | pbcopy
-      # Pause for Maccy to register the copy.
       sleep 0.1
     fi
   done < "$new_keys_file"
 }
 
 # --- Run the script ---
-# Run the main function in the background and show the loading animation.
-main "$@" &
-show_loading $!
+# Count the number of strings provided.
+string_count=$(echo "$1" | tr ',' '\n' | wc -l)
+
+# Only show the loading animation for multiple strings.
+if [ "$string_count" -gt 1 ]; then
+  main "$@" &
+  show_loading $!
+else
+  main "$@"
+fi
 
 # --- Final Output ---
 echo "✅ strings.dart updated successfully."
