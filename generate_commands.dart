@@ -132,10 +132,12 @@ class ${cpn}MobileScreen extends GetView<${cpn}Controller> {
     );
   }
 
-  _bodyWidget(BuildContext context) {
-    return const SafeArea(
-      child: Column(
-        children: [],
+    _bodyWidget(BuildContext context) {
+    return SafeArea(
+      child: GetBuilder<${cpn}Controller>(
+        builder: (_) {
+          return Column(children: []);
+        },
       ),
     );
   }
