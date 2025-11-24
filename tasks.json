@@ -2,6 +2,33 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "🖼️ Add Icon",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "tmp=$(mktemp) && printf \"%s\" \"${input:svgCode}\" > $tmp && curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/add_icon.sh | bash -s -- $tmp \"${input:iconName}\""
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    },
+    {
+      "label": "Update view options",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/update_view_options.sh | bash"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always"
+      }
+    },
+    {
       "label": "✨ Add Strings",
       "type": "shell",
       "command": "bash",
@@ -18,10 +45,14 @@
     {
       "label": "🧬 Generate Dart Model from JSON",
       "type": "shell",
+      "dependsOn": "Update view options",
       "command": "bash",
       "args": [
         "-c",
-        "cat << EOF > /tmp/json_input_temp.json\n${input:jsonText}\nEOF\ncurl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/json_to_dart_model.sh | bash -s ${input:viewName} ${input:className} /tmp/json_input_temp.json\nrm /tmp/json_input_temp.json"
+        "cat << EOF > /tmp/json_input_temp.json\n${input:jsonText}\nEOF\n",
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/json_to_dart_model.sh | ",
+        "bash -s ${input:viewName} ${input:className} /tmp/json_input_temp.json\n",
+        "rm /tmp/json_input_temp.json"
       ],
       "options": {
         "cwd": "${workspaceFolder}"
@@ -127,6 +158,9 @@
         "kind": "build",
         "isDefault": true
       },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
       "detail": "This task create widgets"
     },
     {
@@ -141,6 +175,16 @@
     },
   ],
   "inputs": [
+    {
+      "id": "svgCode",
+      "type": "promptString",
+      "description": "Paste SVG code"
+    },
+    {
+      "id": "iconName",
+      "type": "promptString",
+      "description": "Enter icon name (e.g. arrow.svg)"
+    },
     {
       "id": "viewNames",
       "type": "promptString",
@@ -165,7 +209,35 @@
     },
     {
       "id": "view_name",
-      "type": "promptString",
+      "type": "pickString",
+      "options": [
+        "business_kyc",
+        "my_cards",
+        "settings",
+        "api_credentials",
+        "splash",
+        "deposit",
+        "customer_kyc",
+        "your_plan",
+        "auth",
+        "notification",
+        "create_card",
+        "onboard",
+        "controller",
+        "dashboard",
+        "sandbox_wallet",
+        "transactions",
+        "profile",
+        "model",
+        "card_transactions",
+        "card_customers",
+        "account_settings",
+        "add_money",
+        "withdraw",
+        "routes",
+        "virtual_cards",
+        "congratulations"
+      ],
       "description": "Enter the view name (e.g., add_money)"
     },
     {
@@ -185,8 +257,36 @@
     },
     {
       "id": "viewName",
-      "type": "promptString",
-      "description": "Enter view folder (e.g. add_money)"
+      "type": "pickString",
+      "description": "Enter view folder (e.g. add_money)",
+      "options": [
+        "business_kyc",
+        "my_cards",
+        "settings",
+        "api_credentials",
+        "splash",
+        "deposit",
+        "customer_kyc",
+        "your_plan",
+        "auth",
+        "notification",
+        "create_card",
+        "onboard",
+        "controller",
+        "dashboard",
+        "sandbox_wallet",
+        "transactions",
+        "profile",
+        "model",
+        "card_transactions",
+        "card_customers",
+        "account_settings",
+        "add_money",
+        "withdraw",
+        "routes",
+        "virtual_cards",
+        "congratulations"
+      ]
     },
     {
       "id": "className",
