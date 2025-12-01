@@ -2,6 +2,19 @@
   "version": "2.0.0",
   "tasks": [
     {
+      "label": "⚡ Convert Model → Double (Auto Fields)",
+      "type": "shell",
+      "command": "bash",
+      "args": [
+        "-c",
+        "curl -sSL https://raw.githubusercontent.com/rabbihossenjoy/gen/main/double_converter.sh -o /tmp/double_converter.sh && chmod +x /tmp/double_converter.sh && /tmp/double_converter.sh \"${input:modelFile}\" \"${input:fieldsList}\" \"${workspaceFolder}\""
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
       "label": "🖼️ Add Icon",
       "type": "shell",
       "command": "bash",
@@ -175,6 +188,16 @@
     },
   ],
   "inputs": [
+    {
+      "id": "modelFile",
+      "description": "Enter model file name (example: add_money_gateway_model.dart)",
+      "type": "promptString"
+    },
+    {
+      "id": "fieldsList",
+      "description": "Enter fields to convert (comma-separated, e.g., amount, exchangeRate)",
+      "type": "promptString"
+    },
     {
       "id": "svgCode",
       "type": "promptString",
