@@ -2,15 +2,16 @@
 
 #######################################################
 # Auto Double Converter with Type Update
-# Interactive mode: convert selected fields to double
-# Usage: ./double_converter.sh model_file_name.dart [project_root]
+# Non-interactive mode: pass model name and comma-separated fields
+# Usage: ./double_converter.sh model_file_name.dart "field1,field2,field3" [project_root]
 #######################################################
 
 INPUT_NAME="$1"
-PROJECT_ROOT="$2"
+FIELDS_INPUT="$2"
+PROJECT_ROOT="$3"
 
-if [ -z "$INPUT_NAME" ]; then
-  echo "❌ Usage: ./double_converter.sh model_file_name.dart [project_root]"
+if [ -z "$INPUT_NAME" ] || [ -z "$FIELDS_INPUT" ]; then
+  echo "❌ Usage: ./double_converter.sh model_file_name.dart \"field1,field2\" [project_root]"
   exit 1
 fi
 
@@ -34,34 +35,16 @@ echo "📄 File found at: $FOUND_PATH"
 FILE_PATH="$FOUND_PATH"
 echo ""
 
-# Extract fields in form: fieldName: json["field_key"]
-FIELDS=($(grep -E '\w+[ ]*:[ ]*json\["' "$FILE_PATH" | sed -E 's/^ *([A-Za-z0-9_]+).*/\1/'))
+# Convert input fields string to array
+IFS=',' read -ra SELECTED_FIELDS <<< "$FIELDS_INPUT"
 
-if [ ${#FIELDS[@]} -eq 0 ]; then
-  echo "❌ No fields found in model mapping."
+if [ ${#SELECTED_FIELDS[@]} -eq 0 ]; then
+  echo "⚠️ No fields provided. Aborting."
   exit 1
 fi
 
-echo "✅ Fields detected:"
-i=1
-for f in "${FIELDS[@]}"; do
-  echo "   $i) $f"
-  ((i++))
-done
-
-# Prompt user to select fields
+echo "✅ Fields to convert: ${SELECTED_FIELDS[*]}"
 echo ""
-echo "👉 Enter field numbers to convert (comma-separated, e.g., 1,3). Press ENTER to cancel."
-read INPUT
-
-# Stop if no input
-if [ -z "$INPUT" ]; then
-  echo "⚠️  No fields selected. Aborting."
-  exit 0
-fi
-
-# Parse input into array
-IFS=',' read -ra SELECTED <<< "$INPUT"
 
 # Backup file
 cp "$FILE_PATH" "$FILE_PATH.bak"
@@ -93,12 +76,9 @@ fi
 echo ""
 
 # UPDATE FIELDS
-for s in "${SELECTED[@]}"; do
-  index=$((s-1))
-  field="${FIELDS[$index]}"
-
-  if [ -z "$field" ]; then
-    echo "⚠️  Invalid selection: $s"
+for field in "${SELECTED_FIELDS[@]}"; do
+  if ! grep -q "$field:" "$FILE_PATH"; then
+    echo "⚠️  Field '$field' not found in model. Skipping."
     continue
   fi
 
