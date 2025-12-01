@@ -2,7 +2,6 @@
 
 #######################################################
 # Auto Double Converter with Type Update - macOS/Linux
-# Auto-converts all detected fields to double
 # Usage: ./double_converter.sh model_file_name.dart
 #######################################################
 
@@ -45,15 +44,22 @@ for f in "${FIELDS[@]}"; do
   ((i++))
 done
 
-# Auto-select all fields
-SELECTED=()
-for ((i=0; i<${#FIELDS[@]}; i++)); do
-  SELECTED+=($((i+1)))
-done
+# Prompt user to select fields
+echo ""
+echo "👉 Enter field numbers to convert (comma-separated, e.g., 1,3). Press ENTER to cancel."
+read INPUT
+
+# Stop if no input
+if [ -z "$INPUT" ]; then
+  echo "⚠️  No fields selected. Aborting."
+  exit 0
+fi
+
+# Parse input into array
+IFS=',' read -ra SELECTED <<< "$INPUT"
 
 # Backup file
 cp "$FILE_PATH" "$FILE_PATH.bak"
-echo ""
 echo "📦 Backup created: $FILE_PATH.bak"
 echo ""
 
@@ -108,4 +114,4 @@ for s in "${SELECTED[@]}"; do
 done
 
 echo ""
-echo "🎉 Done! All detected fields updated to json.doubleValue(\"key\")"
+echo "🎉 Done! Selected fields updated to json.doubleValue(\"key\")"
