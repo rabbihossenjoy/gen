@@ -1,18 +1,23 @@
 #!/bin/bash
 
 #######################################################
-# Auto Double Converter with Type Update - macOS/Linux
-# Usage: ./double_converter.sh model_file_name.dart
+# Auto Double Converter with Type Update
+# Interactive mode: convert selected fields to double
+# Usage: ./double_converter.sh model_file_name.dart [project_root]
 #######################################################
 
 INPUT_NAME="$1"
+PROJECT_ROOT="$2"
 
 if [ -z "$INPUT_NAME" ]; then
-  echo "❌ Usage: ./double_converter.sh model_file_name.dart"
+  echo "❌ Usage: ./double_converter.sh model_file_name.dart [project_root]"
   exit 1
 fi
 
-PROJECT_ROOT="$(cd "$(dirname "$0")" && pwd)"
+# If project root not provided, fallback to current working directory
+if [ -z "$PROJECT_ROOT" ]; then
+  PROJECT_ROOT="$(pwd)"
+fi
 
 echo "📌 Searching for file: $INPUT_NAME"
 echo "🔍 Project root: $PROJECT_ROOT"
